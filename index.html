@@ -54,7 +54,6 @@
         </header>
 
         <main>
-            <!-- Sintesi e Risultati Chiave -->
             <section id="sintesi" class="mb-12">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Sintesi Strategica</h2>
@@ -63,15 +62,17 @@
                         e il potenziale reddito netto ottenibile con la gestione agricola diretta, secondo lo scenario di business medio.
                     </p>
                 </div>
-                <div class="flex items-center justify-center min-h-screen">
+
+                <div class="flex justify-center my-10">
                   <a href="studio_fattibilita.html" 
-                   class="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg 
-                   hover:bg-indigo-700 transition duration-300 transform hover:scale-105 
-                   focus:outline-none focus:ring-4 focus:ring-indigo-300">
-                   Vai allo Studio di Fattibilità Villa Marzana
+                     class="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg 
+                            hover:bg-indigo-700 transition duration-300 transform hover:scale-105 
+                            focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                      Vai allo Studio di Fattibilità Villa Marzana
                  </a>
-               </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center mt-10">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
                     <div class="bg-gray-100 p-6 rounded-lg border border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-500">Reddito Netto Attuale (da Affitto)</h3>
                         <p class="text-4xl font-bold text-blue-600 mt-2">€ 30.395 / anno</p>
@@ -89,7 +90,6 @@
                 </div>
             </section>
 
-            <!-- Dashboard Interattiva -->
             <section id="dashboard" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-12">
                 <div class="text-left mb-6">
                     <h2 class="text-2xl font-semibold text-gray-700">Dashboard di Scenario</h2>
@@ -148,7 +148,6 @@
                 </div>
             </section>
 
-            <!-- Stato Attuale -->
             <section id="stato-attuale" class="mb-12">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Analisi dello Stato Attuale</h2>
@@ -166,7 +165,6 @@
                 </div>
             </section>
 
-            <!-- Piano di Implementazione -->
             <section id="implementazione" class="mb-12">
                  <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Piano di Implementazione</h2>
@@ -200,7 +198,6 @@
                 </div>
             </section>
 
-            <!-- Tabella Riassuntiva Scenari -->
             <section id="riassunto">
                  <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Tabella Riassuntiva degli Scenari</h2>
@@ -234,7 +231,69 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Dati estratti dalla tabella riassuntiva
     const scenarioData = {
         pessimistico: {
             ricavi: 299712, costi: 246675, utile: 53037, investimento: 170000,
-            roi: '31%',
+            roi: '31%', payback: '~3.2 anni'
+        },
+        medio: {
+            ricavi: 431670, costi: 224250, utile: 207420, investimento: 170000,
+            roi: '122%', payback: '~0.8 anni'
+        },
+        ottimistico: {
+            ricavi: 522611, costi: 213038, utile: 309573, investimento: 170000,
+            roi: '182%', payback: '~0.6 anni'
+        }
+    };
+
+    const buttons = {
+        pessimistico: document.getElementById('btn-pessimistico'),
+        medio: document.getElementById('btn-medio'),
+        ottimistico: document.getElementById('btn-ottimistico')
+    };
+
+    // Funzione per impostare il bottone attivo
+    function setActiveButton(scenario) {
+        Object.values(buttons).forEach(btn => btn.classList.remove('active'));
+        buttons[scenario].classList.add('active');
+    }
+
+    // Funzione per aggiornare i KPI nel dashboard
+    function updateDashboard(scenario) {
+        const data = scenarioData[scenario];
+        
+        // Formattazione per i numeri
+        const formatCurrency = (value) => `€ ${value.toLocaleString('it-IT')}`;
+        
+        // Aggiorna KPI cards
+        document.getElementById('kpi-mol').innerText = formatCurrency(data.utile);
+        document.getElementById('kpi-investimento').innerText = formatCurrency(data.investimento);
+        document.getElementById('kpi-roi').innerText = data.roi;
+        document.getElementById('kpi-payback').innerText = data.payback;
+        
+        // Aggiorna lo stile del bottone
+        setActiveButton(scenario);
+        
+        // Qui andrebbe la logica per aggiornare i dati dei grafici (mainChart, revenueChart, etc.)
+        // usando una libreria come Chart.js.
+        // Esempio: mainChart.data.datasets[0].data = [data.costi, data.ricavi, data.utile]; mainChart.update();
+        console.log(`Dashboard aggiornato con lo scenario: ${scenario}`);
+    }
+
+    // Aggiunge gli eventi click ai bottoni
+    Object.keys(buttons).forEach(scenario => {
+        buttons[scenario].addEventListener('click', () => updateDashboard(scenario));
+    });
+
+    // Imposta lo stato iniziale del dashboard sullo scenario "Medio"
+    updateDashboard('medio');
+
+    // N.B: La logica di creazione e aggiornamento dei grafici con Chart.js
+    // non è stata implementata poiché i dati di ripartizione non erano disponibili.
+    // Dovresti inizializzare i tre grafici qui e poi aggiornarli nella funzione updateDashboard.
+});
+</script>
+
+</body>
+</html>
