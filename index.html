@@ -64,12 +64,12 @@
                 </div>
 
                 <div class="flex justify-center my-10">
-                  <a href="studio_fattibilita.html" 
-                     class="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg 
-                            hover:bg-indigo-700 transition duration-300 transform hover:scale-105 
-                            focus:outline-none focus:ring-4 focus:ring-indigo-300">
-                      Vai allo Studio di Fattibilità Villa Marzana
-                 </a>
+                    <a href="studio_fattibilita.html" 
+                        class="px-8 py-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg 
+                               hover:bg-indigo-700 transition duration-300 transform hover:scale-105 
+                               focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                        Vai allo Studio di Fattibilità Villa Marzana
+                    </a>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
@@ -89,7 +89,7 @@
                     </div>
                 </div>
             </section>
-
+            
             <section id="dashboard" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-12">
                 <div class="text-left mb-6">
                     <h2 class="text-2xl font-semibold text-gray-700">Dashboard di Scenario</h2>
@@ -166,7 +166,7 @@
             </section>
 
             <section id="implementazione" class="mb-12">
-                 <div class="text-center mb-8">
+                     <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Piano di Implementazione</h2>
                     <p class="mt-2 text-gray-500 max-w-3xl mx-auto">
                         La transizione dalla gestione passiva a quella diretta richiede un percorso strutturato. 
@@ -199,7 +199,7 @@
             </section>
 
             <section id="riassunto">
-                 <div class="text-center mb-8">
+                     <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Tabella Riassuntiva degli Scenari</h2>
                     <p class="mt-2 text-gray-500 max-w-3xl mx-auto">
                         Un confronto diretto delle principali metriche finanziarie per i tre scenari di gestione.
@@ -230,69 +230,152 @@
     </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Dati estratti dalla tabella riassuntiva
-    const scenarioData = {
-        pessimistico: {
-            ricavi: 299712, costi: 246675, utile: 53037, investimento: 170000,
-            roi: '31%', payback: '~3.2 anni'
-        },
-        medio: {
-            ricavi: 431670, costi: 224250, utile: 207420, investimento: 170000,
-            roi: '122%', payback: '~0.8 anni'
-        },
-        ottimistico: {
-            ricavi: 522611, costi: 213038, utile: 309573, investimento: 170000,
-            roi: '182%', payback: '~0.6 anni'
+    // Inizializza le variabili per i grafici
+    let mainChart, revenueChart, costsChart;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Dati estratti e ampliati con breakdown per i grafici a torta
+        const scenarioData = {
+            pessimistico: {
+                ricavi: 299712, costi: 246675, utile: 53037, investimento: 170000,
+                roi: '31%', payback: '~3.2 anni',
+                ricavi_breakdown: [120000, 70000, 109712], // Mais, Grano, Pomodoro
+                costi_breakdown: [90000, 60000, 40000, 56675] // Personale, Sementi/Fertilizzanti, Macchinari, Altro
+            },
+            medio: {
+                ricavi: 431670, costi: 224250, utile: 207420, investimento: 170000,
+                roi: '122%', payback: '~0.8 anni',
+                ricavi_breakdown: [150000, 90000, 191670], // Mais, Grano, Pomodoro
+                costi_breakdown: [80000, 50000, 30000, 64250] // Personale, Sementi/Fertilizzanti, Macchinari, Altro
+            },
+            ottimistico: {
+                ricavi: 522611, costi: 213038, utile: 309573, investimento: 170000,
+                roi: '182%', payback: '~0.6 anni',
+                ricavi_breakdown: [180000, 100000, 242611], // Mais, Grano, Pomodoro
+                costi_breakdown: [70000, 45000, 25000, 73038] // Personale, Sementi/Fertilizzanti, Macchinari, Altro
+            }
+        };
+
+        const buttons = {
+            pessimistico: document.getElementById('btn-pessimistico'),
+            medio: document.getElementById('btn-medio'),
+            ottimistico: document.getElementById('btn-ottimistico')
+        };
+
+        // Funzione per impostare il bottone attivo
+        function setActiveButton(scenario) {
+            Object.values(buttons).forEach(btn => btn.classList.remove('active'));
+            buttons[scenario].classList.add('active');
         }
-    };
 
-    const buttons = {
-        pessimistico: document.getElementById('btn-pessimistico'),
-        medio: document.getElementById('btn-medio'),
-        ottimistico: document.getElementById('btn-ottimistico')
-    };
+        // Funzione per aggiornare i KPI nel dashboard
+        function updateDashboard(scenario) {
+            const data = scenarioData[scenario];
+            
+            // Formattazione per i numeri
+            const formatCurrency = (value) => `€ ${value.toLocaleString('it-IT')}`;
+            
+            // Aggiorna KPI cards
+            document.getElementById('kpi-mol').innerText = formatCurrency(data.utile);
+            document.getElementById('kpi-investimento').innerText = formatCurrency(data.investimento);
+            document.getElementById('kpi-roi').innerText = data.roi;
+            document.getElementById('kpi-payback').innerText = data.payback;
+            
+            // Aggiorna lo stile del bottone
+            setActiveButton(scenario);
+            
+            // Aggiornamento Main Chart (Bar Chart)
+            mainChart.data.datasets[0].data = [data.costi, data.ricavi, data.utile];
+            mainChart.update();
 
-    // Funzione per impostare il bottone attivo
-    function setActiveButton(scenario) {
-        Object.values(buttons).forEach(btn => btn.classList.remove('active'));
-        buttons[scenario].classList.add('active');
-    }
+            // Aggiornamento Revenue Chart (Doughnut)
+            revenueChart.data.datasets[0].data = data.ricavi_breakdown;
+            revenueChart.update();
 
-    // Funzione per aggiornare i KPI nel dashboard
-    function updateDashboard(scenario) {
-        const data = scenarioData[scenario];
-        
-        // Formattazione per i numeri
-        const formatCurrency = (value) => `€ ${value.toLocaleString('it-IT')}`;
-        
-        // Aggiorna KPI cards
-        document.getElementById('kpi-mol').innerText = formatCurrency(data.utile);
-        document.getElementById('kpi-investimento').innerText = formatCurrency(data.investimento);
-        document.getElementById('kpi-roi').innerText = data.roi;
-        document.getElementById('kpi-payback').innerText = data.payback;
-        
-        // Aggiorna lo stile del bottone
-        setActiveButton(scenario);
-        
-        // Qui andrebbe la logica per aggiornare i dati dei grafici (mainChart, revenueChart, etc.)
-        // usando una libreria come Chart.js.
-        // Esempio: mainChart.data.datasets[0].data = [data.costi, data.ricavi, data.utile]; mainChart.update();
-        console.log(`Dashboard aggiornato con lo scenario: ${scenario}`);
-    }
+            // Aggiornamento Costs Chart (Doughnut)
+            costsChart.data.datasets[0].data = data.costi_breakdown;
+            costsChart.update();
 
-    // Aggiunge gli eventi click ai bottoni
-    Object.keys(buttons).forEach(scenario => {
-        buttons[scenario].addEventListener('click', () => updateDashboard(scenario));
+            console.log(`Dashboard aggiornato con lo scenario: ${scenario}`);
+        }
+
+        // --- CHART INITIALIZATION (FIXED/ADDED CODE) ---
+
+        // 1. Main Chart (Bar Chart for Totals)
+        const ctxMain = document.getElementById('mainChart').getContext('2d');
+        mainChart = new Chart(ctxMain, {
+            type: 'bar',
+            data: {
+                labels: ['Costi Operativi', 'Ricavi Lordi', 'MOL (Margine)'],
+                datasets: [{
+                    label: 'Valori Annuali',
+                    data: [
+                        scenarioData.medio.costi, 
+                        scenarioData.medio.ricavi, 
+                        scenarioData.medio.utile
+                    ], 
+                    backgroundColor: ['#f87171', '#34d399', '#3b82f6'],
+                    borderRadius: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Valore (€)' } },
+                    x: { grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 2. Revenue Chart (Doughnut Chart)
+        const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+        revenueChart = new Chart(ctxRevenue, {
+            type: 'doughnut',
+            data: {
+                labels: ['Mais', 'Grano', 'Pomodoro da Industria'],
+                datasets: [{
+                    data: scenarioData.medio.ricavi_breakdown,
+                    backgroundColor: ['#22c55e', '#facc15', '#ef4444'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+
+        // 3. Costs Chart (Doughnut Chart)
+        const ctxCosts = document.getElementById('costsChart').getContext('2d');
+        costsChart = new Chart(ctxCosts, {
+            type: 'pie',
+            data: {
+                labels: ['Personale', 'Sementi/Fertilizzanti', 'Manutenzione Macchinari', 'Altri Costi Operativi'],
+                datasets: [{
+                    data: scenarioData.medio.costi_breakdown,
+                    backgroundColor: ['#6366f1', '#fb923c', '#a78bfa', '#06b6d4'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            }
+        });
+        
+        // --- END CHART INITIALIZATION ---
+
+
+        // Aggiunge gli eventi click ai bottoni
+        Object.keys(buttons).forEach(scenario => {
+            buttons[scenario].addEventListener('click', () => updateDashboard(scenario));
+        });
+
+        // Imposta lo stato iniziale del dashboard sullo scenario "Medio"
+        updateDashboard('medio'); 
     });
-
-    // Imposta lo stato iniziale del dashboard sullo scenario "Medio"
-    updateDashboard('medio');
-
-    // N.B: La logica di creazione e aggiornamento dei grafici con Chart.js
-    // non è stata implementata poiché i dati di ripartizione non erano disponibili.
-    // Dovresti inizializzare i tre grafici qui e poi aggiornarli nella funzione updateDashboard.
-});
 </script>
 
 </body>
