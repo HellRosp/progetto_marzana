@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio di Fattibilità | Progetto Villa Marzana</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN for graphics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fc; }
+        .card { background-color: white; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .table-header { background-color: #2563eb; color: white; }
+        .table-row-total { background-color: #eff6ff; font-weight: bold; border-top: 2px solid #3b82f6; }
+        th, td { padding: 0.75rem 1rem; text-align: left; }
+        .scenario-button { transition: all 0.2s; }
+        .scenario-button.active {
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-2">Progetto Villa Marzana</h1>
+        <p class="text-xl text-indigo-600">Studio di Fattibilità Economica</p>
+    </header>
+
+    <!-- Main Content Card -->
+    <div class="max-w-6xl mx-auto card p-6 md:p-10">
+
+        <!-- 1. Sintesi Strategica (omitted for brevity, assume content remains) -->
+        <section class="mb-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 border-b-2 border-indigo-500 pb-2 mb-4">1. Sintesi Strategica</h2>
+            <p class="text-gray-700 leading-relaxed">
+                Il progetto mira a massimizzare il ritorno sul capitale fondiario tramite una gestione agricola ad Alto Valore Aggiunto, superando il reddito passivo da affitto ($\approx €16K$ annui). La valutazione simula l'investimento necessario e i tempi di recupero per tre diversi scenari.
+            </p>
+            <div class="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                <h3 class="text-xl font-semibold text-green-800 mb-2">Risultati Chiave (Affitto vs. Attivo)</h3>
+                <ul class="list-disc list-inside mt-2 text-sm md:text-base">
+                    <li>**Reddito da Affitto (Baseline):** $\approx €16.000$ / anno (Costo Opportunità)</li>
+                    <li>**MOL Gestione Attiva (Medio, a regime):** $\approx €130.000$ / anno</li>
+                    <li>**Recupero Investimento (Medio, senza debito):** Entro Anno 4.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 2. Piano di Implementazione Quinquennale (Diventa 2) -->
+        <section class="mb-10">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 border-b-2 border-indigo-500 pb-2 mb-4">2. Piano di Implementazione Quinquennale (Y1-Y5)</h2>
+            <p class="text-gray-700 mb-6">Seleziona uno scenario per visualizzare i dettagli finanziari.</p>
+
+            <!-- Scenario Selector Buttons -->
+            <div class="flex flex-wrap justify-center space-x-4 mb-8">
+                <button id="btn-basso" onclick="updateScenario('Basso')" class="scenario-button px-6 py-3 font-semibold rounded-full bg-red-100 text-red-700 hover:bg-red-200 focus:outline-none focus:ring-4 focus:ring-red-300">
+                    Basso Rischio / Investimento
+                </button>
+                <button id="btn-medio" onclick="updateScenario('Medio')" class="scenario-button active px-6 py-3 font-semibold rounded-full bg-yellow-100 text-yellow-700 hover:bg-yellow-200 focus:outline-none focus:ring-4 focus:ring-yellow-300">
+                    Medio Rischio / Investimento
+                </button>
+                <button id="btn-alto" onclick="updateScenario('Alto')" class="scenario-button px-6 py-3 font-semibold rounded-full bg-green-100 text-green-700 hover:bg-green-200 focus:outline-none focus:ring-4 focus:ring-green-300">
+                    Alto Rischio / Investimento
+                </button>
+            </div>
+
+            <!-- 2.1. Proiezioni Finanziarie Quinquennali (Cost/Revenue) -->
+            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Proiezione Finanziaria Dettagliata per Scenario: <span id="scenario-title" class="text-indigo-600">Medio</span></h3>
+            
+            <div class="overflow-x-auto mb-10">
+                <table class="min-w-full divide-y divide-gray-200 card">
+                    <thead>
+                        <tr class="table-header">
+                            <th scope="col" class="rounded-tl-xl">Anno</th>
+                            <th scope="col">Ricavi (K€)</th>
+                            <th scope="col">Costi Op. (K€)</th>
+                            <th scope="col">Investimenti (CAPEX K€)</th>
+                            <th scope="col" class="bg-indigo-700">Rata Finan. (K€)</th>
+                            <th scope="col" class="bg-indigo-700">NCF dopo Debito (K€)</th>
+                            <th scope="col" class="rounded-tr-xl">Flusso Cumulato (K€)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scenario-table" class="bg-white divide-y divide-gray-200">
+                        <!-- Table content will be injected by JavaScript -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-row-total text-blue-800">
+                            <td colspan="4" class="font-extrabold text-right">Totale Investito (CAPEX Y1-Y5)</td>
+                            <td id="total-investment"></td>
+                            <td class="font-extrabold text-right">NCF Totale dopo Debito (Y1-Y5)</td>
+                            <td id="total-ncf" class="font-extrabold text-right"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- 3. Grafico Profit & Loss -->
+            <div class="mt-10 p-4 card">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">3. Grafico P&L (NCF dopo Debito vs. Affitto Baseline)</h3>
+                <div class="h-96">
+                    <canvas id="profitLossChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+                <h4 class="text-lg font-semibold text-gray-800">Nota sul Flusso di Cassa Netto (NCF):</h4>
+                <p class="text-sm md:text-base text-gray-700">
+                    Il **NCF dopo Debito** è calcolato come: Ricavi - Costi Operativi - Investimenti (CAPEX) - Rata Annuale di Finanziamento. Questo fornisce la misura più prudente della liquidità. La Baseline d'Affitto ($\approx €16K$) funge da costo opportunità.
+                </p>
+            </div>
+        </section>
+
+        <!-- NUOVA SEZIONE: Simulazione Finanziamento -->
+        <section class="mt-12 pt-6 border-t-2 border-indigo-200">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 pb-2 mb-4">4. Simulazione del Piano di Finanziamento (Debito)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-indigo-50 p-6 rounded-xl">
+                <div>
+                    <h3 class="text-xl font-semibold text-indigo-700 mb-3">Dettagli del Mutuo Ipotizzato</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>**Copertura:** <span id="loan-principal" class="font-bold text-gray-900"></span> (Totale CAPEX dello scenario)</li>
+                        <li>**Durata:** 10 Anni (120 Mesi)</li>
+                        <li>**Tasso d'Interesse:** 6.0% (Annuale, Tasso Fisso Ipotetico)</li>
+                        <li>**Formula:** Ammortamento alla francese (Rata Costante)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-indigo-700 mb-3">Risultato del Finanziamento</h3>
+                    <div class="text-4xl font-extrabold text-indigo-900" id="annual-rata"></div>
+                    <p class="text-sm text-gray-500">Rata annuale (K€) da pagare per 10 anni.</p>
+                    <div class="mt-3 p-3 bg-white rounded-lg shadow-inner">
+                        <p class="text-sm text-gray-700">L'inclusione della rata nel calcolo NCF sposta il punto di **Break-Even** operativo (NCF > 0) e il recupero cumulato dell'investimento.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JavaScript for Data and Interactivity -->
+    <script>
+        // --- CONSTANTI E DATI ---
+
+        // Dati dei 3 scenari (in migliaia di Euro - K€)
+        const SCENARIO_DATA = {
+            'Affitto Baseline': 16, // Ricavo netto annuo da affitto, fisso
+            'Basso': [
+                { year: 1, ricavi: 60, costiOp: 50, investimenti: 100 },
+                { year: 2, ricavi: 80, costiOp: 60, investimenti: 50 },
+                { year: 3, ricavi: 100, costiOp: 70, investimenti: 0 },
+                { year: 4, ricavi: 120, costiOp: 80, investimenti: 0 },
+                { year: 5, ricavi: 150, costiOp: 90, investimenti: 0 },
+            ],
+            'Medio': [
+                { year: 1, ricavi: 65, costiOp: 55, investimenti: 150 },
+                { year: 2, ricavi: 110, costiOp: 70, investimenti: 100 },
+                { year: 3, ricavi: 150, costiOp: 80, investimenti: 0 },
+                { year: 4, ricavi: 190, costiOp: 85, investimenti: 0 },
+                { year: 5, ricavi: 220, costiOp: 90, investimenti: 0 },
+            ],
+            'Alto': [
+                { year: 1, ricavi: 70, costiOp: 60, investimenti: 200 },
+                { year: 2, ricavi: 130, costiOp: 80, investimenti: 150 },
+                { year: 3, ricavi: 200, costiOp: 90, investimenti: 0 },
+                { year: 4, ricavi: 250, costiOp: 100, investimenti: 0 },
+                { year: 5, ricavi: 300, costiOp: 110, investimenti: 0 },
+            ]
+        };
+        
+        // Parametri per la Simulazione del Mutuo (Rata Francese)
+        const LOAN_TERM_YEARS = 10;
+        const LOAN_RATE_ANNUAL = 0.06; // 6.0%
+
+        let myChart; // Variabile globale per l'istanza del grafico
+
+        // --- FUNZIONI DI CALCOLO E FORMATTAZIONE ---
+
+        // Calcola la Rata Mensile (PMT) e la Rata Annuale del mutuo
+        const calculateAnnualPayment = (principal, annualRate, years) => {
+            if (principal <= 0) return 0;
+            const monthlyRate = annualRate / 12;
+            const months = years * 12;
+
+            // Formula PMT: P * [r(1+r)^n] / [(1+r)^n - 1]
+            const pmt = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+            
+            // Rata Annuale
+            return pmt * 12;
+        };
+
+        // Formatta i numeri (aggiunge .00 e K€)
+        const formatCurrency = (amount) => {
+            // Arrotonda all'intero più vicino per K€
+            const roundedAmount = Math.round(amount); 
+            return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(roundedAmount).replace('€', '').trim();
+        };
+
+        // --- FUNZIONE PRINCIPALE DI AGGIORNAMENTO SCENARIO ---
+        
+        window.updateScenario = (scenario) => {
+            const data = SCENARIO_DATA[scenario];
+            const tableBody = document.getElementById('scenario-table');
+            const scenarioTitle = document.getElementById('scenario-title');
+            
+            tableBody.innerHTML = '';
+            scenarioTitle.textContent = scenario;
+
+            let cumulatoPostDebito = 0;
+            let totalNCFPostDebito = 0;
+            let totalInvestment = 0;
+            
+            // Calcola il CAPEX totale per lo scenario (necessario per il mutuo)
+            data.forEach(item => totalInvestment += item.investimenti);
+
+            // Calcola la Rata Annuale di Finanziamento (basata sul CAPEX totale)
+            const annualDebtService = calculateAnnualPayment(totalInvestment, LOAN_RATE_ANNUAL, LOAN_TERM_YEARS);
+            
+            // Aggiorna la sezione Finanziamento
+            document.getElementById('loan-principal').textContent = `${formatCurrency(totalInvestment)} K€`;
+            document.getElementById('annual-rata').textContent = `${formatCurrency(annualDebtService)} K€`;
+
+
+            const NCF_PostDebito_data = [];
+            const labels = [];
+            
+            // 1. Popola la Tabella e calcola i Flussi
+            data.forEach(item => {
+                // Rata di Finanziamento: Assumiamo che la rata sia costante per tutti gli anni del piano 5Y
+                const rata = annualDebtService; 
+
+                // Flusso di Cassa Prima Rata (NCF Lordo) = Ricavi - Costi Operativi - Investimenti
+                const ncfPreDebt = item.ricavi - item.costiOp - item.investimenti;
+                
+                // Flusso di Cassa Netto Finale (NCF dopo Debito) = NCF Lordo - Rata Finanziamento
+                const ncfPostDebt = ncfPreDebt - rata;
+                
+                cumulatoPostDebito += ncfPostDebt;
+                totalNCFPostDebito += ncfPostDebt;
+                
+                NCF_PostDebito_data.push(ncfPostDebt); // Dato per il grafico
+                labels.push(`Anno ${item.year}`);
+
+                const ncfClass = ncfPostDebt < 0 ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold';
+                const cumulatoClass = cumulatoPostDebito < 0 ? 'text-red-700 font-bold' : 'text-blue-700 font-bold';
+
+                const row = `
+                    <tr class="hover:bg-gray-50">
+                        <td class="font-bold text-gray-700">${item.year}</td>
+                        <td>${formatCurrency(item.ricavi)}</td>
+                        <td>${formatCurrency(item.costiOp)}</td>
+                        <td>${formatCurrency(item.investimenti)}</td>
+                        <td class="text-indigo-700 font-medium">${formatCurrency(rata)}</td>
+                        <td class="${ncfClass}">${formatCurrency(ncfPostDebt)}</td>
+                        <td class="${cumulatoClass}">${formatCurrency(cumulatoPostDebito)}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+            
+            // 2. Aggiorna i Totali in Footer
+            document.getElementById('total-investment').textContent = formatCurrency(totalInvestment);
+            document.getElementById('total-ncf').textContent = formatCurrency(totalNCFPostDebito);
+
+            // 3. Aggiorna i Bottoni (Stato Attivo)
+            document.querySelectorAll('.scenario-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${scenario.toLowerCase()}`).classList.add('active');
+
+            // 4. Aggiorna il Grafico con il NCF *dopo* il debito
+            updateChart(labels, NCF_PostDebito_data, scenario);
+        };
+        
+        // Funzione per creare o aggiornare il grafico
+        const updateChart = (labels, ncfData, scenarioName) => {
+            const ctx = document.getElementById('profitLossChart').getContext('2d');
+            
+            const baselineData = labels.map(() => SCENARIO_DATA['Affitto Baseline']);
+            
+            // Configurazione del Grafico
+            const chartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'NCF dopo Debito (K€)',
+                        data: ncfData,
+                        backgroundColor: (context) => context.raw > 0 ? 'rgba(75, 192, 192, 0.7)' : 'rgba(255, 99, 132, 0.7)',
+                        borderColor: (context) => context.raw > 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        type: 'bar',
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Baseline Affitto (K€)',
+                        data: baselineData,
+                        borderColor: 'rgb(255, 159, 64)',
+                        borderWidth: 3,
+                        type: 'line',
+                        fill: false,
+                        tension: 0.1,
+                        yAxisID: 'y'
+                    }
+                ]
+            };
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Proiezione P&L ${scenarioName} (in K€)`,
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += formatCurrency(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            usePointStyle: true,
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Valore (K€)'
+                        }
+                    }
+                }
+            };
+
+            if (myChart) {
+                // Aggiorna il grafico esistente
+                myChart.data = chartData;
+                myChart.options.plugins.title.text = `Proiezione P&L ${scenarioName} (in K€)`;
+                myChart.update();
+            } else {
+                // Crea un nuovo grafico
+                myChart = new Chart(ctx, {
+                    data: chartData,
+                    options: chartOptions
+                });
+            }
+        };
+
+        // Inizializza l'applicazione con lo scenario 'Medio' al caricamento della pagina
+        window.onload = () => {
+            updateScenario('Medio');
+        };
+    </script>
+
+</body>
+</html>
