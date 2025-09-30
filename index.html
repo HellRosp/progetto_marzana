@@ -7,10 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals with Green Accent -->
-    <!-- Application Structure Plan: Ho progettato l'applicazione come una dashboard a singola pagina con un flusso logico dall'alto verso il basso. 1. Sintesi: presenta subito i KPI più importanti (confronto netto attuale vs. potenziale) per catturare l'attenzione. 2. Dashboard Interattiva: il cuore dell'app, consente all'utente di selezionare uno scenario (Pessimistico, Medio, Ottimistico) e vedere tutti i grafici e i dati aggiornarsi dinamicamente. Questo favorisce l'esplorazione "what-if". 3. Stato Attuale: una sezione statica che funge da benchmark costante, mostrando la redditività della gestione passiva. 4. Piano di Implementazione: delinea i passi pratici, traducendo i numeri in azioni concrete. 5. Tabella Riassuntiva: conclude l'analisi con un confronto diretto e dettagliato di tutti gli scenari, come richiesto. Questa struttura è stata scelta per guidare l'utente da una visione d'insieme a un'analisi dettagliata e interattiva, rendendo i dati complessi più digeribili e comprensibili rispetto a un report statico. -->
-    <!-- Visualization & Content Choices: Report Info: Dati finanziari su affitto vs. gestione diretta. -> Goal: Confrontare la redditività e analizzare i componenti di costo/ricavo. -> Viz/Presentation: Bar chart per Costi/Ricavi/Utile, Donut charts per il breakdown, Cards per i KPI. -> Interaction: Pulsanti per cambiare scenario (Pessimistico, Medio, Ottimistico) che aggiornano dinamicamente tutti i grafici e i valori. -> Justification: I grafici a barre e a torta sono ideali per confronti e proporzioni. L'interattività permette di esplorare la sensibilità del business case a diverse condizioni di mercato senza sovraccaricare l'utente con informazioni. -> Library/Method: Chart.js (Canvas) per tutti i grafici. HTML/Tailwind per le tabelle e le card informative. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -37,13 +33,15 @@
         .nav-button.active {
             background-color: #22c55e;
             color: white;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 
+                        0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
         .kpi-card {
             background-color: white;
             border-radius: 0.75rem;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 
+                        0 2px 4px -2px rgb(0 0 0 / 0.1);
             border: 1px solid #e5e7eb;
         }
     </style>
@@ -60,28 +58,36 @@
             <section id="sintesi" class="mb-12">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Sintesi Strategica</h2>
-                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">Questa sezione evidenzia il confronto diretto tra il reddito netto derivante dalla gestione passiva attuale (affitto) e il potenziale reddito netto ottenibile con la gestione agricola diretta, secondo lo scenario di business medio.</p>
+                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">
+                        Questa sezione evidenzia il confronto diretto tra il reddito netto derivante dalla gestione passiva attuale (affitto) 
+                        e il potenziale reddito netto ottenibile con la gestione agricola diretta, secondo lo scenario di business medio.
+                    </p>
                 </div>
-                <body class="flex items-center justify-center min-h-screen p-4">
+                <!-- ✅ Fixed: replaced extra <body> with <div> -->
+                <div class="flex items-center justify-center min-h-screen p-4">
                    <div class="card p-8 w-full max-w-lg text-center bg-white rounded-xl shadow-2xl">
-                   <h1 class="text-3xl font-bold text-gray-900 mb-4">Portafoglio Progetti Immobiliari</h1>
-                   <p class="text-gray-600 mb-8">Seleziona il documento che desideri visualizzare.</p>
-        
-                    <a href="studio_fattibilita.html" class="inline-block px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
-                      Vai allo Studio di Fattibilità Villa Marzana
-                    </a>
+                       <h1 class="text-3xl font-bold text-gray-900 mb-4">Portafoglio Progetti Immobiliari</h1>
+                       <p class="text-gray-600 mb-8">Seleziona il documento che desideri visualizzare.</p>
+                       <a href="studio_fattibilita.html" 
+                          class="inline-block px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                          Vai allo Studio di Fattibilità Villa Marzana
+                       </a>
                    </div>
-                </body>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center mt-10">
                     <div class="bg-gray-100 p-6 rounded-lg border border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-500">Reddito Netto Attuale (da Affitto)</h3>
                         <p class="text-4xl font-bold text-blue-600 mt-2">€ 30.395 / anno</p>
-                        <p class="text-sm text-gray-500 mt-2">Basato su contratti di affitto per 47,7 Ha al netto di imposte e spese.</p>
+                        <p class="text-sm text-gray-500 mt-2">
+                            Basato su contratti di affitto per 47,7 Ha al netto di imposte e spese.
+                        </p>
                     </div>
                     <div class="bg-green-50 p-6 rounded-lg border border-green-200">
                         <h3 class="text-lg font-semibold text-gray-600">Potenziale Reddito Netto (Gestione Diretta)</h3>
                         <p class="text-4xl font-bold text-green-600 mt-2" id="kpi-sintesi-netto">€ 207.420 / anno</p>
-                        <p class="text-sm text-gray-500 mt-2">Margine Operativo Lordo (MOL) nello scenario medio, a pieno regime.</p>
+                        <p class="text-sm text-gray-500 mt-2">
+                            Margine Operativo Lordo (MOL) nello scenario medio, a pieno regime.
+                        </p>
                     </div>
                 </div>
             </section>
@@ -90,7 +96,10 @@
             <section id="dashboard" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-12">
                 <div class="text-left mb-6">
                     <h2 class="text-2xl font-semibold text-gray-700">Dashboard di Scenario</h2>
-                    <p class="mt-2 text-gray-500">Seleziona uno scenario per esplorare i dati finanziari. Tutti i grafici e gli indicatori si aggiorneranno in tempo reale per riflettere i costi, i ricavi e la redditività previsti per l'opzione scelta. Questo strumento permette di valutare l'impatto di diverse condizioni di mercato sulla performance del progetto.</p>
+                    <p class="mt-2 text-gray-500">
+                        Seleziona uno scenario per esplorare i dati finanziari. Tutti i grafici e gli indicatori si aggiorneranno in tempo reale 
+                        per riflettere i costi, i ricavi e la redditività previsti per l'opzione scelta.
+                    </p>
                 </div>
 
                 <div class="flex justify-center mb-8 bg-gray-100 p-2 rounded-lg">
@@ -107,7 +116,7 @@
                         </div>
                     </div>
                     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 pt-0 lg:pt-12">
-                         <div class="kpi-card text-center">
+                        <div class="kpi-card text-center">
                             <h4 class="font-semibold text-gray-500 text-base">MOL Annuo</h4>
                             <p id="kpi-mol" class="text-3xl font-bold text-gray-800 mt-2"></p>
                         </div>
@@ -146,23 +155,27 @@
             <section id="stato-attuale" class="mb-12">
                 <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Analisi dello Stato Attuale</h2>
-                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">Questa sezione riassume la situazione economica corrente basata sui contratti di affitto dei terreni. Questi dati rappresentano il benchmark da superare per giustificare l'investimento e la transizione verso la gestione diretta.</p>
+                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">
+                        Questa sezione riassume la situazione economica corrente basata sui contratti di affitto dei terreni.
+                    </p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-4xl mx-auto">
                     <ul class="divide-y divide-gray-200">
                         <li class="flex justify-between items-center py-3"><span class="font-medium text-gray-600">Superficie Totale</span><span class="font-semibold text-gray-800">47,7080 Ha</span></li>
                         <li class="flex justify-between items-center py-3"><span class="font-medium text-gray-600">Canone di Affitto Annuo Lordo</span><span class="font-semibold text-green-700">+ € 33.395</span></li>
-                        <li class="flex justify-between items-center py-3"><span class="font-medium text-gray-600">Costi di Proprietà Stimati (IMU, Consorzio)</span><span class="font-semibold text-red-600">- € 3.000</span></li>
+                        <li class="flex justify-between items-center py-3"><span class="font-medium text-gray-600">Costi di Proprietà Stimati</span><span class="font-semibold text-red-600">- € 3.000</span></li>
                         <li class="flex justify-between items-center py-3 border-t-2 border-gray-300 mt-2 pt-3"><span class="font-bold text-lg text-gray-800">Reddito Netto Annuo da Affitto</span><span class="font-bold text-lg text-blue-700">€ 30.395</span></li>
                     </ul>
                 </div>
             </section>
-            
+
             <!-- Piano di Implementazione -->
             <section id="implementazione" class="mb-12">
                  <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Piano di Implementazione</h2>
-                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">La transizione dalla gestione passiva a quella diretta richiede un percorso strutturato. Di seguito sono illustrate le fasi chiave per avviare il progetto e raggiungere la piena operatività e redditività.</p>
+                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">
+                        La transizione dalla gestione passiva a quella diretta richiede un percorso strutturato. 
+                    </p>
                 </div>
                 <div class="max-w-4xl mx-auto">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -171,20 +184,20 @@
                             <h4 class="font-semibold mt-3">Fase 1: Start-up</h4>
                             <p class="text-sm text-gray-600">Risoluzione contratti, business plan definitivo, apertura P.IVA agricola. (0-3 mesi)</p>
                         </div>
-                         <div class="flex items-center flex-col p-4">
+                        <div class="flex items-center flex-col p-4">
                             <div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">2</div>
                             <h4 class="font-semibold mt-3">Fase 2: Investimenti</h4>
                             <p class="text-sm text-gray-600">Acquisto macchinari, impianto pereto, preparazione terreni. (3-9 mesi)</p>
                         </div>
-                         <div class="flex items-center flex-col p-4">
+                        <div class="flex items-center flex-col p-4">
                             <div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">3</div>
                             <h4 class="font-semibold mt-3">Fase 3: Primo Anno</h4>
-                            <p class="text-sm text-gray-600">Prima semina/raccolta pomodoro e grano. Manutenzione pereto. (9-24 mesi)</p>
+                            <p class="text-sm text-gray-600">Prima semina/raccolta pomodoro e grano. (9-24 mesi)</p>
                         </div>
-                         <div class="flex items-center flex-col p-4">
+                        <div class="flex items-center flex-col p-4">
                             <div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl">4</div>
                             <h4 class="font-semibold mt-3">Fase 4: Pieno Regime</h4>
-                            <p class="text-sm text-gray-600">Tutte le colture a piena produzione. Ottimizzazione processi. (dal 3°/4° anno in poi)</p>
+                            <p class="text-sm text-gray-600">Tutte le colture a piena produzione. (dal 3°/4° anno in poi)</p>
                         </div>
                     </div>
                 </div>
@@ -194,7 +207,9 @@
             <section id="riassunto">
                  <div class="text-center mb-8">
                     <h2 class="text-2xl font-semibold text-gray-700">Tabella Riassuntiva degli Scenari</h2>
-                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">Un confronto diretto delle principali metriche finanziarie per i tre scenari di gestione. Questa tabella offre una visione completa per una valutazione del rischio e del potenziale di profitto.</p>
+                    <p class="mt-2 text-gray-500 max-w-3xl mx-auto">
+                        Un confronto diretto delle principali metriche finanziarie per i tre scenari di gestione.
+                    </p>
                 </div>
                 <div class="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
                     <table class="w-full text-sm text-left text-gray-600">
@@ -224,210 +239,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     const scenarioData = {
         pessimistico: {
-            ricavi: 299712,
-            costi: 246675,
-            utile: 53037,
-            investimento: 170000,
+            ricavi: 299712, costi: 246675, utile: 53037, investimento: 170000,
             roi: '31%',
-            payback: '~3.2 anni',
-            ricaviDetail: {
-                labels: ['Pere Abate', 'Pomodoro', 'Grano Duro'],
-                data: [153600, 103680, 42432],
-            },
-            costiDetail: {
-                labels: ['Materiali', 'Carburante', 'Lavoro', 'Contoterzi', 'Admin'],
-                data: [131175, 22000, 55000, 33000, 5500],
-            }
-        },
-        medio: {
-            ricavi: 431670,
-            costi: 224250,
-            utile: 207420,
-            investimento: 170000,
-            roi: '122%',
-            payback: '~0.8 anni',
-            ricaviDetail: {
-                labels: ['Pere Abate', 'Pomodoro', 'Grano Duro'],
-                data: [240000, 144000, 47670],
-            },
-            costiDetail: {
-                labels: ['Materiali', 'Carburante', 'Lavoro', 'Contoterzi', 'Admin'],
-                data: [119250, 20000, 50000, 30000, 5000],
-            }
-        },
-        ottimistico: {
-            ricavi: 522611,
-            costi: 213038,
-            utile: 309573,
-            investimento: 170000,
-            roi: '182%',
-            payback: '~0.6 anni',
-            ricaviDetail: {
-                labels: ['Pere Abate', 'Pomodoro', 'Grano Duro'],
-                data: [303600, 174240, 44771],
-            },
-            costiDetail: {
-                labels: ['Materiali', 'Carburante', 'Lavoro', 'Contoterzi', 'Admin'],
-                data: [113288, 19000, 47500, 28500, 4750],
-            }
-        }
-    };
-
-    let currentScenario = 'medio';
-    let mainChart, revenueChart, costsChart;
-
-    const formatCurrency = (value) => new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(value);
-
-    function updateKPIs(data) {
-        document.getElementById('kpi-mol').textContent = formatCurrency(data.utile);
-        document.getElementById('kpi-investimento').textContent = formatCurrency(data.investimento);
-        document.getElementById('kpi-roi').textContent = data.roi;
-        document.getElementById('kpi-payback').textContent = data.payback;
-        document.getElementById('kpi-sintesi-netto').textContent = formatCurrency(scenarioData.medio.utile) + " / anno";
-    }
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    padding: 20,
-                    boxWidth: 15,
-                    font: {
-                        size: 12
-                    }
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        let label = context.dataset.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed.y !== null) {
-                            label += formatCurrency(context.parsed.y);
-                        }
-                        return label;
-                    }
-                }
-            }
-        }
-    };
-    
-     const donutChartOptions = {
-        ...chartOptions,
-        cutout: '60%',
-        plugins: {
-             legend: {
-                position: 'right',
-                 labels: {
-                    padding: 15,
-                    boxWidth: 12,
-                    font: {
-                        size: 11
-                    }
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        const label = context.label || '';
-                        const value = context.parsed || 0;
-                        const total = context.chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                        const percentage = ((value / total) * 100).toFixed(1) + '%';
-                        return `${label}: ${formatCurrency(value)} (${percentage})`;
-                    }
-                }
-            }
-        }
-    };
-
-
-    function createCharts() {
-        const mainCtx = document.getElementById('mainChart').getContext('2d');
-        mainChart = new Chart(mainCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Analisi Finanziaria'],
-                datasets: [
-                    { label: 'Ricavi Lordi', data: [], backgroundColor: '#22c55e',},
-                    { label: 'Costi Operativi', data: [], backgroundColor: '#ef4444',},
-                    { label: 'Utile Netto (MOL)', data: [], backgroundColor: '#3b82f6',}
-                ]
-            },
-            options: { ...chartOptions, scales: { y: { beginAtZero: true, ticks: { callback: value => formatCurrency(value) } } } }
-        });
-
-        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-        revenueChart = new Chart(revenueCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Ripartizione Ricavi',
-                    data: [],
-                    backgroundColor: ['#10b981', '#34d399', '#6ee7b7'],
-                    borderColor: '#fdfcfb',
-                    borderWidth: 4,
-                }]
-            },
-            options: donutChartOptions
-        });
-
-        const costsCtx = document.getElementById('costsChart').getContext('2d');
-        costsChart = new Chart(costsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Ripartizione Costi',
-                    data: [],
-                    backgroundColor: ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80'],
-                    borderColor: '#fdfcfb',
-                    borderWidth: 4,
-                }]
-            },
-            options: donutChartOptions
-        });
-    }
-
-    function updateCharts(scenario) {
-        const data = scenarioData[scenario];
-        mainChart.data.datasets[0].data = [data.ricavi];
-        mainChart.data.datasets[1].data = [data.costi];
-        mainChart.data.datasets[2].data = [data.utile];
-        mainChart.update();
-
-        revenueChart.data.labels = data.ricaviDetail.labels;
-        revenueChart.data.datasets[0].data = data.ricaviDetail.data;
-        revenueChart.update();
-
-        costsChart.data.labels = data.costiDetail.labels;
-        costsChart.data.datasets[0].data = data.costiDetail.data;
-        costsChart.update();
-    }
-    
-    function setScenario(scenario) {
-        currentScenario = scenario;
-        const data = scenarioData[scenario];
-        updateKPIs(data);
-        updateCharts(scenario);
-
-        document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-        document.getElementById(`btn-${scenario}`).classList.add('active');
-    }
-
-    createCharts();
-    setScenario('medio'); 
-
-    document.getElementById('btn-pessimistico').addEventListener('click', () => setScenario('pessimistico'));
-    document.getElementById('btn-medio').addEventListener('click', () => setScenario('medio'));
-    document.getElementById('btn-ottimistico').addEventListener('click', () => setScenario('ottimistico'));
-});
-</script>
-
-</body>
-</html>
