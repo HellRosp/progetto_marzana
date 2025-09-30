@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="it"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Studio di Fattibilità: Progetto Villa Marzana&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Chosen Palette: Warm Neutrals with Green Accent --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Application Structure Plan: Ho progettato l'applicazione come una dashboard a singola pagina con un flusso logico dall'alto verso il basso. 1. Sintesi: presenta subito i KPI più importanti (confronto netto attuale vs. potenziale) per catturare l'attenzione. 2. Dashboard Interattiva: il cuore dell'app, consente all'utente di selezionare uno scenario (Pessimistico, Medio, Ottimistico) e vedere tutti i grafici e i dati aggiornarsi dinamicamente. Questo favorisce l'esplorazione "what-if". 3. Stato Attuale: una sezione statica che funge da benchmark costante, mostrando la redditività della gestione passiva. 4. Piano di Implementazione: delinea i passi pratici, traducendo i numeri in azioni concrete. 5. Tabella Riassuntiva: conclude l'analisi con un confronto diretto e dettagliato di tutti gli scenari, come richiesto. Questa struttura è stata scelta per guidare l'utente da una visione d'insieme a un'analisi dettagliata e interattiva, rendendo i dati complessi più digeribili e comprensibili rispetto a un report statico. --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Visualization &amp; Content Choices: Report Info: Dati finanziari su affitto vs. gestione diretta. -&gt; Goal: Confrontare la redditività e analizzare i componenti di costo/ricavo. -&gt; Viz/Presentation: Bar chart per Costi/Ricavi/Utile, Donut charts per il breakdown, Cards per i KPI. -&gt; Interaction: Pulsanti per cambiare scenario (Pessimistico, Medio, Ottimistico) che aggiornano dinamicamente tutti i grafici e i valori. -&gt; Justification: I grafici a barre e a torta sono ideali per confronti e proporzioni. L'interattività permette di esplorare la sensibilità del business case a diverse condizioni di mercato senza sovraccaricare l'utente con informazioni. -&gt; Library/Method: Chart.js (Canvas) per tutti i grafici. HTML/Tailwind per le tabelle e le card informative. --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Inter', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #fdfcfb;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.chart-container {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>position: relative;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 600px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-left: auto;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-right: auto;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>height: 300px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-height: 400px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>@media (min-width: 768px) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>.chart-container {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>height: 350px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.nav-button {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>transition: all 0.3s ease;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.nav-button.active {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #22c55e;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.kpi-card {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: white;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.5rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: 1px solid #e5e7eb;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="antialiased"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container mx-auto p-4 sm:p-6 lg:p-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;header class="text-center mb-10"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 class="text-3xl md:text-4xl font-bold text-gray-800"&gt;Progetto Villa Marzana&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;p class="mt-2 text-lg text-gray-600"&gt;Analisi di Fattibilità per la Gestione Diretta dei Terreni Agricoli&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;main&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Sintesi e Risultati Chiave --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;section id="sintesi" class="mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="text-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-2xl font-semibold text-gray-700"&gt;Sintesi Strategica&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mt-2 text-gray-500 max-w-3xl mx-auto"&gt;Questa sezione evidenzia il confronto diretto tra il reddito netto derivante dalla gestione passiva attuale (affitto) e il potenziale reddito netto ottenibile con la gestione agricola diretta, secondo lo scenario di business medio.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="bg-gray-100 p-6 rounded-lg border border-gray-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-lg font-semibold text-gray-500"&gt;Reddito Netto Attuale (da Affitto)&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="text-4xl font-bold text-blue-600 mt-2"&gt;€ 30.395 / anno&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="text-sm text-gray-500 mt-2"&gt;Basato su contratti di affitto per 47,7 Ha al netto di imposte e spese.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="bg-green-50 p-6 rounded-lg border border-green-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-lg font-semibold text-gray-600"&gt;Potenziale Reddito Netto (Gestione Diretta)&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="text-4xl font-bold text-green-600 mt-2" id="kpi-sintesi-netto"&gt;€ 207.420 / anno&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;p class="text-sm text-gray-500 mt-2"&gt;Margine Operativo Lordo (MOL) nello scenario medio, a pieno regime.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Dashboard Interattiva --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;section id="dashboard" class="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="text-left mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-2xl font-semibold text-gray-700"&gt;Dashboard di Scenario&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mt-2 text-gray-500"&gt;Seleziona uno scenario per esplorare i dati finanziari. Tutti i grafici e gli indicatori si aggiorneranno in tempo reale per riflettere i costi, i ricavi e la redditività previsti per l'opzione scelta. Questo strumento permette di valutare l'impatto di diverse condizioni di mercato sulla performance del progetto.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex justify-center mb-8 bg-gray-100 p-2 rounded-lg"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button id="btn-pessimistico" class="nav-button w-1/3 py-2 px-4 rounded-md font-semibold text-gray-600"&gt;Pessimistico&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button id="btn-medio" class="nav-button w-1/3 py-2 px-4 rounded-md font-semibold text-gray-600 active"&gt;Medio&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;button id="btn-ottimistico" class="nav-button w-1/3 py-2 px-4 rounded-md font-semibold text-gray-600"&gt;Ottimistico&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="w-full"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-xl font-semibold text-center mb-4 text-gray-700"&gt;Costi, Ricavi e Utile Netto&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="chart-container"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;canvas id="mainChart"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 pt-0 lg:pt-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>&lt;div class="kpi-card text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold text-gray-500 text-base"&gt;MOL Annuo&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p id="kpi-mol" class="text-3xl font-bold text-gray-800 mt-2"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="kpi-card text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold text-gray-500 text-base"&gt;Investimento Iniziale&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p id="kpi-investimento" class="text-3xl font-bold text-gray-800 mt-2"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="kpi-card text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold text-gray-500 text-base"&gt;ROI (semplice)&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p id="kpi-roi" class="text-3xl font-bold text-gray-800 mt-2"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="kpi-card text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold text-gray-500 text-base"&gt;Payback Period&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p id="kpi-payback" class="text-3xl font-bold text-gray-800 mt-2"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-xl font-semibold text-center mb-4 text-gray-700"&gt;Ripartizione Ricavi per Coltura&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="chart-container h-72 md:h-80"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;canvas id="revenueChart"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;h3 class="text-xl font-semibold text-center mb-4 text-gray-700"&gt;Ripartizione Costi Annuali&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="chart-container h-72 md:h-80"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;canvas id="costsChart"&gt;&lt;/canvas&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Stato Attuale --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;section id="stato-attuale" class="mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="text-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-2xl font-semibold text-gray-700"&gt;Analisi dello Stato Attuale&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mt-2 text-gray-500 max-w-3xl mx-auto"&gt;Questa sezione riassume la situazione economica corrente basata sui contratti di affitto dei terreni. Questi dati rappresentano il benchmark da superare per giustificare l'investimento e la transizione verso la gestione diretta.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 max-w-4xl mx-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;ul class="divide-y divide-gray-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="flex justify-between items-center py-3"&gt;&lt;span class="font-medium text-gray-600"&gt;Superficie Totale&lt;/span&gt;&lt;span class="font-semibold text-gray-800"&gt;47,7080 Ha&lt;/span&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="flex justify-between items-center py-3"&gt;&lt;span class="font-medium text-gray-600"&gt;Canone di Affitto Annuo Lordo&lt;/span&gt;&lt;span class="font-semibold text-green-700"&gt;+ € 33.395&lt;/span&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="flex justify-between items-center py-3"&gt;&lt;span class="font-medium text-gray-600"&gt;Costi di Proprietà Stimati (IMU, Consorzio)&lt;/span&gt;&lt;span class="font-semibold text-red-600"&gt;- € 3.000&lt;/span&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;li class="flex justify-between items-center py-3 border-t-2 border-gray-300 mt-2 pt-3"&gt;&lt;span class="font-bold text-lg text-gray-800"&gt;Reddito Netto Annuo da Affitto&lt;/span&gt;&lt;span class="font-bold text-lg text-blue-700"&gt;€ 30.395&lt;/span&gt;&lt;/li&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/ul&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/section&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Piano di Implementazione --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;section id="implementazione" class="mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div class="text-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-2xl font-semibold text-gray-700"&gt;Piano di Implementazione&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mt-2 text-gray-500 max-w-3xl mx-auto"&gt;La transizione dalla gestione passiva a quella diretta richiede un percorso strutturato. Di seguito sono illustrate le fasi chiave per avviare il progetto e raggiungere la piena operatività e redditività.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="max-w-4xl mx-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="flex items-center flex-col p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl"&gt;1&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold mt-3"&gt;Fase 1: Start-up&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-sm text-gray-600"&gt;Risoluzione contratti, business plan definitivo, apertura P.IVA agricola. (0-3 mesi)&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>&lt;div class="flex items-center flex-col p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl"&gt;2&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold mt-3"&gt;Fase 2: Investimenti&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-sm text-gray-600"&gt;Acquisto macchinari, impianto pereto, preparazione terreni. (3-9 mesi)&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>&lt;div class="flex items-center flex-col p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl"&gt;3&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold mt-3"&gt;Fase 3: Primo Anno&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-sm text-gray-600"&gt;Prima semina/raccolta pomodoro e grano. Manutenzione pereto. (9-24 mesi)&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>&lt;div class="flex items-center flex-col p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;div class="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center font-bold text-xl"&gt;4&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;h4 class="font-semibold mt-3"&gt;Fase 4: Pieno Regime&lt;/h4&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;p class="text-sm text-gray-600"&gt;Tutte le colture a piena produzione. Ottimizzazione processi. (dal 3°/4° anno in poi)&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/section&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- Tabella Riassuntiva Scenari --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;section id="riassunto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>&lt;div class="text-center mb-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-2xl font-semibold text-gray-700"&gt;Tabella Riassuntiva degli Scenari&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;p class="mt-2 text-gray-500 max-w-3xl mx-auto"&gt;Un confronto diretto delle principali metriche finanziarie per i tre scenari di gestione. Questa tabella offre una visione completa per una valutazione del rischio e del potenziale di profitto.&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;table class="w-full text-sm text-left text-gray-600"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;thead class="text-xs text-gray-700 uppercase bg-gray-50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th scope="col" class="px-6 py-3"&gt;Metrica&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th scope="col" class="px-6 py-3 text-center"&gt;Pessimistico&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th scope="col" class="px-6 py-3 text-center bg-green-50"&gt;Medio&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>&lt;th scope="col" class="px-6 py-3 text-center"&gt;Ottimistico&lt;/th&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/thead&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr class="bg-white border-b"&gt;&lt;th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"&gt;Ricavi Lordi Annuali&lt;/th&gt;&lt;td class="px-6 py-4 text-center"&gt;€ 299.712&lt;/td&gt;&lt;td class="px-6 py-4 text-center bg-green-50"&gt;€ 431.670&lt;/td&gt;&lt;td class="px-6 py-4 text-center"&gt;€ 522.611&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr class="bg-white border-b"&gt;&lt;th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"&gt;Costi Operativi Annuali&lt;/th&gt;&lt;td class="px-6 py-4 text-center"&gt;€ 246.675&lt;/td&gt;&lt;td class="px-6 py-4 text-center bg-green-50"&gt;€ 224.250&lt;/td&gt;&lt;td class="px-6 py-4 text-center"&gt;€ 213.038&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr class="bg-white border-b"&gt;&lt;th scope="row" class="px-6 py-4 font-bold text-gray-900 whitespace-nowrap"&gt;Margine Operativo Lordo (MOL)&lt;/th&gt;&lt;td class="px-6 py-4 text-center font-bold"&gt;€ 53.037&lt;/td&gt;&lt;td class="px-6 py-4 text-center font-bold bg-green-50"&gt;€ 207.420&lt;/td&gt;&lt;td class="px-6 py-4 text-center font-bold"&gt;€ 309.573&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr class="bg-white border-b"&gt;&lt;th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"&gt;Investimento Iniziale&lt;/th&gt;&lt;td class="px-6 py-4 text-center"&gt;€ 170.000&lt;/td&gt;&lt;td class="px-6 py-4 text-center bg-green-50"&gt;€ 170.000&lt;/td&gt;&lt;td class="px-6 py-4 text-center"&gt;€ 170.000&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr class="bg-white border-b"&gt;&lt;th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"&gt;ROI (MOL / Investimento)&lt;/th&gt;&lt;td class="px-6 py-4 text-center"&gt;31%&lt;/td&gt;&lt;td class="px-6 py-4 text-center bg-green-50"&gt;122%&lt;/td&gt;&lt;td class="px-6 py-4 text-center"&gt;182%&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;tr class="bg-white"&gt;&lt;th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"&gt;Payback Period (Anni)&lt;/th&gt;&lt;td class="px-6 py-4 text-center"&gt;~3.2 anni&lt;/td&gt;&lt;td class="px-6 py-4 text-center bg-green-50"&gt;~0.8 anni&lt;/td&gt;&lt;td class="px-6 py-4 text-center"&gt;~0.6 anni&lt;/td&gt;&lt;/tr&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/tbody&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/table&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/section&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/main&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">document.addEventListener('DOMContentLoaded', function () {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const scenarioData = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pessimistico: {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ricavi: 299712,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>costi: 246675,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>utile: 53037,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>investimento: 170000,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>roi: '31%',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>payback: '~3.2 anni',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ricaviDetail: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Pere Abate', 'Pomodoro', 'Grano Duro'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data: [153600, 103680, 42432],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>costiDetail: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Materiali', 'Carburante', 'Lavoro', 'Contoterzi', 'Admin'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data: [131175, 22000, 55000, 33000, 5500],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>medio: {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ricavi: 431670,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>costi: 224250,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>utile: 207420,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>investimento: 170000,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>roi: '122%',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>payback: '~0.8 anni',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ricaviDetail: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Pere Abate', 'Pomodoro', 'Grano Duro'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data: [240000, 144000, 47670],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>costiDetail: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Materiali', 'Carburante', 'Lavoro', 'Contoterzi', 'Admin'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data: [119250, 20000, 50000, 30000, 5000],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ottimistico: {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ricavi: 522611,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>costi: 213038,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>utile: 309573,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>investimento: 170000,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>roi: '182%',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>payback: '~0.6 anni',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ricaviDetail: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Pere Abate', 'Pomodoro', 'Grano Duro'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data: [303600, 174240, 44771],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>costiDetail: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Materiali', 'Carburante', 'Lavoro', 'Contoterzi', 'Admin'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data: [113288, 19000, 47500, 28500, 4750],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentScenario = 'medio';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let mainChart, revenueChart, costsChart;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const formatCurrency = (value) =&gt; new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(value);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateKPIs(data) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('kpi-mol').textContent = formatCurrency(data.utile);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('kpi-investimento').textContent = formatCurrency(data.investimento);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('kpi-roi').textContent = data.roi;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('kpi-payback').textContent = data.payback;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('kpi-sintesi-netto').textContent = formatCurrency(scenarioData.medio.utile) + " / anno";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const chartOptions = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>responsive: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>maintainAspectRatio: false,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>plugins: {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>legend: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>position: 'bottom',</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>padding: 20,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>boxWidth: 15,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>font: {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>size: 12</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tooltip: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>callbacks: {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>label: function (context) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>let label = context.dataset.label || '';</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>if (label) {</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>label += ': ';</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>if (context.parsed.y !== null) {</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>label += formatCurrency(context.parsed.y);</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>return label;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">     </span>const donutChartOptions = {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>...chartOptions,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cutout: '60%',</p>
+<p class="p1"><span class="Apple-converted-space">        </span>plugins: {</p>
+<p class="p1"><span class="Apple-converted-space">             </span>legend: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>position: 'right',</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>labels: {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>padding: 15,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>boxWidth: 12,</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>font: {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>size: 11</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tooltip: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>callbacks: {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>label: function (context) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const label = context.label || '';</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const value = context.parsed || 0;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const total = context.chart.data.datasets[0].data.reduce((acc, val) =&gt; acc + val, 0);</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const percentage = ((value / total) * 100).toFixed(1) + '%';</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>return `${label}: ${formatCurrency(value)} (${percentage})`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function createCharts() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const mainCtx = document.getElementById('mainChart').getContext('2d');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mainChart = new Chart(mainCtx, {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>type: 'bar',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>data: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: ['Analisi Finanziaria'],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>datasets: [</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ label: 'Ricavi Lordi', data: [], backgroundColor: '#22c55e',},</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ label: 'Costi Operativi', data: [], backgroundColor: '#ef4444',},</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{ label: 'Utile Netto (MOL)', data: [], backgroundColor: '#3b82f6',}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>]</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>options: { ...chartOptions, scales: { y: { beginAtZero: true, ticks: { callback: value =&gt; formatCurrency(value) } } } }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const revenueCtx = document.getElementById('revenueChart').getContext('2d');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>revenueChart = new Chart(revenueCtx, {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>type: 'doughnut',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>data: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: [],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>datasets: [{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>label: 'Ripartizione Ricavi',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>data: [],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>backgroundColor: ['#10b981', '#34d399', '#6ee7b7'],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>borderColor: '#fdfcfb',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>borderWidth: 4,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}]</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>options: donutChartOptions</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const costsCtx = document.getElementById('costsChart').getContext('2d');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>costsChart = new Chart(costsCtx, {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>type: 'doughnut',</p>
+<p class="p1"><span class="Apple-converted-space">            </span>data: {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>labels: [],</p>
+<p class="p1"><span class="Apple-converted-space">                </span>datasets: [{</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>label: 'Ripartizione Costi',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>data: [],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>backgroundColor: ['#f87171', '#fb923c', '#facc15', '#a3e635', '#4ade80'],</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>borderColor: '#fdfcfb',</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>borderWidth: 4,</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}]</p>
+<p class="p1"><span class="Apple-converted-space">            </span>},</p>
+<p class="p1"><span class="Apple-converted-space">            </span>options: donutChartOptions</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateCharts(scenario) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const data = scenarioData[scenario];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mainChart.data.datasets[0].data = [data.ricavi];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mainChart.data.datasets[1].data = [data.costi];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mainChart.data.datasets[2].data = [data.utile];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mainChart.update();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>revenueChart.data.labels = data.ricaviDetail.labels;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>revenueChart.data.datasets[0].data = data.ricaviDetail.data;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>revenueChart.update();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>costsChart.data.labels = data.costiDetail.labels;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>costsChart.data.datasets[0].data = data.costiDetail.data;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>costsChart.update();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setScenario(scenario) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>currentScenario = scenario;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const data = scenarioData[scenario];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateKPIs(data);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>updateCharts(scenario);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.querySelectorAll('.nav-button').forEach(btn =&gt; btn.classList.remove('active'));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById(`btn-${scenario}`).classList.add('active');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>createCharts();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setScenario('medio');<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('btn-pessimistico').addEventListener('click', () =&gt; setScenario('pessimistico'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('btn-medio').addEventListener('click', () =&gt; setScenario('medio'));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById('btn-ottimistico').addEventListener('click', () =&gt; setScenario('ottimistico'));</p>
+<p class="p1">});</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
